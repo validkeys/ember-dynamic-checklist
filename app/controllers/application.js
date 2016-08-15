@@ -3,19 +3,25 @@ import _ from 'lodash';
 
 export default Ember.Controller.extend({
 
+
+  userSkillIds: Ember.computed('user.skills.[]', function() {
+    return this.get('user.skills').map((id) => id.toString());
+  }),
+
   // Just returns the skills
-  selectedSkills: Ember.computed('user.skills.[]', function() {
+  selectedSkills: Ember.computed('userSkillIds.[]','skills.[]', function() {
+    let userSkills  = this.get('userSkillIds');
     return this.get('skills').filter((skill) => {
-      return this.get('user.skills').indexOf(skill.get('id')) > -1;
+      return userSkills.indexOf(skill.get('id')) > -1;
     });
   }),
 
-  groupedSkills: Ember.computed('skills.[]', 'user.skills.[]', function() {
+  groupedSkills: Ember.computed('skills.[]', 'userSkillIds.[]', function() {
     let skills      = this.get('skills').toArray();
 
     // if your DB is storing the ids as integers in the user.skills array,
     // then convert them to a string here as ember ids are strings
-    let userSkills  = this.get('user.skills').map((id) => id.toString());
+    let userSkills  = this.get('userSkillIds');
     let lookup = {};
 
     // Group each skill by the category
@@ -45,11 +51,11 @@ export default Ember.Controller.extend({
   actions: {
     toggleSkill(skill, selected) {
       // pushObject / removeOject doesn't require you to actually supply
-      // a POJO. 
+      // a POJO.
       if (selected) {
-        this.get('user.skills').pushObject(skill.get('id'));
+        this.get('user.skills').pushObject(parseInt(skill.get('id')));
       } else {
-        this.get('user.skills').removeObject(skill.get('id'));
+        this.get('user.skills').removeObject(parseInt(skill.get('id')));
       }
     }
   }
