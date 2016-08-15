@@ -1,0 +1,30 @@
+<h1>{{user.name}}'s Skills</h1>
+
+<ul>
+  {{#each selectedSkills as |skill|}}
+  <li>{{skill.name}}</li>
+  {{else}}
+  <li>User Has No Skills</li>
+  {{/each}}
+</ul>
+
+
+<h2>Survey</h2>
+{{#each groupedSkills as |grouping|}}
+<div class="">
+  <h3>{{grouping.category}}</h3>
+  <ul>
+    {{#each grouping.skills as |skill|}}
+    <li>
+      {{one-way-checkbox checked=skill.selected update=(action "toggleSkill" skill.content)}}
+      {{skill.name}}
+    </li>
+    {{/each}}
+  </ul>
+</div>
+{{/each}}
+
+<p>
+  Click save, open your network request tab and see the request data
+</p>
+<button {{action "save"}}>Save Answers</button>
